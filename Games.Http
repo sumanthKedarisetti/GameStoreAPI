@@ -1,0 +1,14 @@
+GET http://localhost:5109/games
+###
+GET http://localhost:5109/games/7
+###
+POST http://localhost:5109/games
+Content-Type: application/json
+
+{
+    "name": "Vice city",
+    "genre": "Car Games",
+    "price": 90.00,
+    "developer": "Sai Sumanth",
+    "publisher": "V N Sai Sumanth"
+}
