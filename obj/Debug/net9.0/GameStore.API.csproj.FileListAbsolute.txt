@@ -1,0 +1,7 @@
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.AssemblyInfoInputs.cache
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.AssemblyInfo.cs
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.csproj.CoreCompileInputs.cache
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\suman\GameStoreAPI\obj\Debug\net9.0\GameStore.API.sourcelink.json
