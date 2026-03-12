@@ -2,13 +2,25 @@ GET http://localhost:5000/games
 ###
 GET http://localhost:5000/games/7
 ###
-POST http://localhost:5000/games
-Content-Type: application/json
+POST http://localhost:5000/games/5
+content-type:application/json
 
 {
-    "name": "Vice city",
-    "genre": "Car Games",
-    "price": 90.00,
-    "developer": "Sai Sumanth",
-    "publisher": "V N Sai Sumanth"
+    "Name":"Cricket",
+    "Genre":"Bat Game",
+    "Price":100.89,  
+    "Developer":"ICC Cricket Team",
+    "Publisher":"Sumanth"
 }
+###
+PUT http://localhost:5000/games/5  
+content-type:application/json
+
+{
+    "Name":"Cricket",
+    "Genre":"cricket from India",
+    "Price":107.90876,  
+    "Developer":"ICC Cricket Team of the World",
+    "Publisher":"Sai Sumanth"
+}
+
