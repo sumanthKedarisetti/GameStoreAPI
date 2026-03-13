@@ -23,4 +23,7 @@ content-type:application/json
     "Developer":"ICC Cricket Team of the World",
     "Publisher":"Sai Sumanth"
 }
+###
+DELETE http://localhost:5000/games/4
+
 

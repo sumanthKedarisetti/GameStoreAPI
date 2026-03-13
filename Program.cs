@@ -16,8 +16,6 @@ builder.Services.AddAuthentication(options =>
 
 }).AddCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
     options.Cookie.Name = "GameStoreAuthCookie";
     // during development we might hit the site over plain HTTP;
     // a secure cookie policy of Always will prevent the auth cookie from
@@ -96,28 +94,7 @@ app.MapDelete("/games/{id}",(int id)=>
     }
     games.RemoveAt(index);
     return Results.NoContent();
-});
-
-// Authentication endpoints
-app.MapGet("/Account/Login", (HttpContext http) =>
-{
-    // Trigger OpenID Connect challenge to sign the user in
-    var props = new AuthenticationProperties { RedirectUri = "/" };
-    // Challenge accepts a collection of schemes, so wrap the single scheme in an array
-    return Results.Challenge(props, new[] { OpenIdConnectDefaults.AuthenticationScheme });
-});
-
-app.MapGet("/Account/Logout", async (HttpContext http) =>
-{
-    // Sign out of both the local cookie and the OpenID Connect provider
-    await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    await http.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme,
-        new AuthenticationProperties { RedirectUri = "/" });
-    return Results.Redirect("/");
-});
-
-app.UseAuthentication();
-app.UseAuthorization();
+}).RequireAuthorization();
 
 // default root endpoint
 app.MapGet("/", () => Results.Redirect("/games"));
