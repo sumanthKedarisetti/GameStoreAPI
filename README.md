@@ -38,4 +38,4 @@ Things done
          in susequenet requests -->valiadates tken from cookie using (metadata from authority)
 
 ---configured the authentication service middleware in program.cs
-          
+-- everything is working perfectly.
