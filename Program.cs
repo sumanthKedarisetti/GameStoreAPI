@@ -1,45 +1,28 @@
-using System.Reflection.Metadata.Ecma335;
 using GameStore.API.DTOs;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-    options.DefaultScheme=CookieAuthenticationDefaults.AuthenticationScheme;    
-    options.DefaultSignInScheme=CookieAuthenticationDefaults.AuthenticationScheme;  
+var keycloakSection = builder.Configuration.GetSection("Keycloak");
+var authority = keycloakSection["Authority"]
+    ?? throw new InvalidOperationException("Missing Keycloak:Authority in configuration.");
+var audience = keycloakSection["Audience"] ?? keycloakSection["ClientId"]
+    ?? throw new InvalidOperationException("Missing Keycloak:Audience (or Keycloak:ClientId) in configuration.");
+var requireHttpsMetadata = keycloakSection.GetValue<bool?>("RequireHttpsMetadata")
+    ?? authority.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 
-}).AddCookie(options =>
+builder.Services.AddAuthentication(options=>
 {
-    options.Cookie.Name = "GameStoreAuthCookie";
-    // during development we might hit the site over plain HTTP;
-    // a secure cookie policy of Always will prevent the auth cookie from
-    // being stored, which can interfere with the login flow. Use SameAsRequest
-    // or comment this out when testing locally.
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-
-}).AddOpenIdConnect(options =>
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options=>
 {
-    options.Authority = builder.Configuration["keycloak:Authority"];
-    options.ClientId = builder.Configuration["keycloak:ClientId"];
-    options.ClientSecret = builder.Configuration["keycloak:ClientSecret"];
-    options.ResponseType = "code";
-    options.SaveTokens = true;
-    options.CallbackPath = builder.Configuration["keycloak:CallbackPath"];
-    options.GetClaimsFromUserInfoEndpoint = true;
-    options.RequireHttpsMetadata=false;
-    options.TokenValidationParameters=new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        NameClaimType="preferred_username"
-    };
+    options.Authority = authority;
+    options.Audience = audience;
+    options.RequireHttpsMetadata = requireHttpsMetadata;
 });
-
 builder.Services.AddAuthorization(options =>
 {
     // Enforce authentication for all endpoints by default
@@ -93,11 +76,11 @@ app.MapDelete("/games/{id}",(int id)=>
         return Results.NotFound();
     }
     games.RemoveAt(index);
-    return Results.NoContent();
+    return Results.Ok(games);
 }).RequireAuthorization();
 
 // default root endpoint
-app.MapGet("/", () => Results.Redirect("/games"));
+app.MapGet("/", () => "Game Store API is running. Use a Bearer token to access protected endpoints.").AllowAnonymous();
 
 app.Run();
  

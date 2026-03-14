@@ -2,7 +2,7 @@ GET http://localhost:5000/games
 ###
 GET http://localhost:5000/games/7
 ###
-POST http://localhost:5000/games/5
+POST http://localhost:5000/games
 content-type:application/json
 
 {
